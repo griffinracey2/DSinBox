@@ -1,0 +1,145 @@
+---
+title: "Lab 04 - La Quinta is Spanish for next to Denny's, Pt. 1"
+author: "Insert your name here"
+date: "Insert date here"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse) 
+library(readr)
+library(dsbox) 
+```
+
+```{r load-data, message = FALSE}
+states <- read_csv("states.csv")
+```
+
+### Exercise 1
+
+```{r}
+## Number of rows
+num_rows_dennys <- nrow(dennys)
+num_rows_dennys
+## Number of columns
+num_col_dennys <- ncol(dennys)
+num_col_dennys
+
+## Each of rows represent a different locaton/address
+
+## The variables are city, state, zip, longitude, latitude
+```
+
+### Exercise 2
+
+```{r}
+## Number of rows
+num_rows_laq <- nrow(laquinta)
+
+## Number of columns
+num_col_laq <- ncol(laquinta)
+num_rows_laq
+num_col_laq
+
+```
+Each of rows represent a different location/address
+
+The variables are city, state, zip, longitude, latitude
+
+### Exercise 3
+LaQuinta has locations in Canada, Mexico, New Zealand, Honduras, Turkey, UAE, Chile, and Columbia. 
+
+Denny's has locations in Chile, Canada, Mexico, Costa Rica, Honduras, El Salvador, United Kingdom, New Zealand, Curacao, China, Dominican Republic, Japan and Guam. 
+...
+
+### Exercise 4
+we can do a filter everything except the 50 states.
+
+...
+
+### Exercise 5
+```{r}
+dennys %>%
+  filter(!(state %in% states$abbreviation))
+```
+
+...
+
+### Exercise 6
+```{r}
+dennys %>%
+  mutate(country = "United States")
+```
+
+...
+
+### Exercise 7
+```{r}
+laquinta %>%
+  filter(!(state %in% states$abbreviation))
+```
+They are in Mexico, Columbia, Canada, and Honduras.
+...
+
+### Excercise 8
+```{r eval = FALSE}
+laquinta <- laquinta %>%
+  mutate(country = case_when(
+    state %in% state.abb     ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT"           ~ "Colombia",
+    state == "FM"            ~ "Honduras",
+    state %in% c("SL","PU","AG","QR","CH","NL","VE") ~ "Mexico"
+  ))
+```
+
+```{r}
+laquinta <- laquinta %>%
+  filter(country == "United States")
+```
+...
+
+### Exercise 9
+```{r}
+dennys <- dennys %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation"))
+```
+...
+
+### Exercise 10
+```{r}
+dennys <- dennys %>%
+  mutate(establishment = "Denny's")
+
+laquinta <- laquinta %>%
+  mutate(establishment = "La Quinta")
+
+dn_lq <- bind_rows(dennys, laquinta)
+
+ggplot(dn_lq, mapping = aes(x = longitude, y = latitude, color = establishment, alpha = 0.3)) +
+  geom_point()
+```
+### Exercise 11
+```{r}
+dn_lq_nc <- dn_lq %>%
+  filter(state == "NC")
+dn_lq_nc
+
+ggplot(dn_lq_nc, mapping = aes(x = longitude, y = latitude, color = establishment, alpha = 0.5)) +
+  geom_point()
+```
+...
+### Exercise 12
+```{r}
+dn_lq_tx <- dn_lq %>%
+  filter(state == "TX")
+dn_lq_tx
+
+ggplot(dn_lq_tx, mapping = aes(x = longitude, y = latitude, color = establishment, alpha = 0.5)) +
+  geom_point()
+```
+
+Add exercise headings as needed.
